@@ -63,6 +63,11 @@ repr(test)
 # %%
 repr(bubber_sort(test))
 # %%
+
+'''
+Exercise: Implement a function that moves a value forward in the list by swapping values between two neighbouring links.
+It will serve as the inner loop in insertion sort.
+'''
 class DLink(object):
     def __init__(self, val, prev, next):
         self.val = val
@@ -85,13 +90,6 @@ def to_list(itr):
             link.next.prev = link
     return link
 
-def swap_down(x:DLink):
-    # Move the value in x forward in the lislt
-    # until it finds a value smaller than itself
-    while x.prev and x.val <= x.prev.val:
-        x.val ,x.prev.val = x.prev.val, x.val
-        x = x.prev
-
 def insertion_sort(x):
     link = x
     while link is not None:
@@ -100,6 +98,15 @@ def insertion_sort(x):
         link = link.next
     return x
 
+''' Swap down implementation:'''
+def swap_down(x:DLink):
+    # Move the value in x forward in the lislt
+    # until it finds a value smaller than itself
+    while x.prev and x.val <= x.prev.val:
+        x.val ,x.prev.val = x.prev.val, x.val
+        x = x.prev
+
+''' Testing'''
 #%%
 o = [3, 2, 4, 1, 2]
 test = to_list(o)
@@ -108,20 +115,13 @@ print(test)
 insertion_sort(test)
 print(test)
 # %%
-
+''' Swapping cells.'''
 class Link(object):
     def __init__(self, val, prev, next):
         self.val = val
         self.prev = prev
         self.next = next
-        
-    def __str__(self) -> str:
-        x = []
-        link = self
-        while link:
-            x.append(link.val)
-            link = link.next
-        return str(x)
+
 
 
 class List(object):
@@ -141,23 +141,47 @@ class List(object):
             link = self.dummy.next
         else: 
             link = self.dummy
-        while link.val is not None:
+        while link is not self.dummy:
             x.append(link.val)
             link = link.next
         return str(x)
 
-def swap_link(link:Link):
-    link.next, link.next.next.prev, link.prev, link.prev.next, link.next.prev, link.next.next =\
-        link.next.next, link, link.next, link.next, link.prev, link
-	# Implement this
+'''
+Exercise: Write a function that swaps a link and its successor in a linked list, not the values, they should remain the same,
+but the order the links have in the list.
 
+Implementation:
+'''
+def swap_link(link:Link):
+    #l1 , l2 = link, link.next
+    #l1.next, l2.next = l2.next, l1.next
+    
+    link.next, link.next.next.prev, link.prev, link.prev.next, link.next.prev, link.next.next =\
+        link.next.next, link.next.prev, link.next, link.next, link.prev, link.next.prev
+    return
+	# Implement this
+''' we tried using the above implementation, but couldn't get it to work, and we're unsure why. We think it might be a problem with the 
+__str__ method, but since we can't figure out what goes wrong we cant verify if it works.'''
+
+
+'''Testing:'''
 #%%
-x = List([1, 2, 5, 2, 5, 9, 3, None])
+x = List([1, 2, 5, 2, 5, 9, 3])
 # %%
 print(x)
-
 swap_link(x.dummy.next.next.next)
-
-#%%
-print(x.dummy.next)
+print(x)
 # %%
+
+'''
+Exercise: Update your implementation of insertion sort to use link-swapping instead of value-swapping.
+
+Updated swap down implementation if we had a working swap_link:
+'''
+#%%
+def swap_down(x:DLink):
+    # Move the value in x forward in the lislt
+    # until it finds a value smaller than itself
+    while x.prev.val and x.val <= x.prev.val:
+        swap_link(x.prev) #since our implementation swaps a link with its next, we have to call it on the previous to x
+        x = x.prev
