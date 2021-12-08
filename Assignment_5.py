@@ -108,3 +108,56 @@ print(test)
 insertion_sort(test)
 print(test)
 # %%
+
+class Link(object):
+    def __init__(self, val, prev, next):
+        self.val = val
+        self.prev = prev
+        self.next = next
+        
+    def __str__(self) -> str:
+        x = []
+        link = self
+        while link:
+            x.append(link.val)
+            link = link.next
+        return str(x)
+
+
+class List(object):
+    def __init__(self, x):
+        self.dummy = Link(None, None, None)
+        self.dummy.next = self.dummy
+        self.dummy.prev = self.dummy
+
+        for val in reversed(x):
+            new_link = Link(val, self.dummy, self.dummy.next)
+            new_link.prev.next = new_link
+            new_link.next.prev = new_link
+    
+    def __str__(self) -> str:
+        x = []
+        if self.dummy.next:
+            link = self.dummy.next
+        else: 
+            link = self.dummy
+        while link.val is not None:
+            x.append(link.val)
+            link = link.next
+        return str(x)
+
+def swap_link(link:Link):
+    link.next, link.next.next.prev, link.prev, link.prev.next, link.next.prev, link.next.next =\
+        link.next.next, link, link.next, link.next, link.prev, link
+	# Implement this
+
+#%%
+x = List([1, 2, 5, 2, 5, 9, 3, None])
+# %%
+print(x)
+
+swap_link(x.dummy.next.next.next)
+
+#%%
+print(x.dummy.next)
+# %%
